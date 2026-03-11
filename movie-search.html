@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>电影资源搜索</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0f0f0f;--surface:#1a1a1a;--card:#222;--border:#333;
+  --text:#e0e0e0;--text-dim:#888;--accent:#5b9bd5;--accent-hover:#7ab3e8;
+  --tag-bt:#e67e22;--tag-cn:#e74c3c;--tag-intl:#2ecc71;--tag-sub:#9b59b6;
+  --radius:10px;
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:var(--bg);color:var(--text);min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;
+  padding:40px 16px 60px;
+}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:8px;letter-spacing:-0.02em}
+.subtitle{color:var(--text-dim);font-size:.9rem;margin-bottom:32px}
+
+/* Search area */
+.search-box{
+  width:100%;max-width:600px;display:flex;flex-direction:column;gap:12px;
+  margin-bottom:36px;
+}
+.input-row{display:flex;gap:10px}
+.input-row input{
+  flex:1;padding:14px 18px;font-size:1.1rem;border-radius:var(--radius);
+  border:1px solid var(--border);background:var(--surface);color:var(--text);
+  outline:none;transition:border .2s;
+}
+.input-row input:focus{border-color:var(--accent)}
+.input-row input.year{flex:0 0 100px;text-align:center}
+
+.controls{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.type-toggle{display:flex;border-radius:var(--radius);overflow:hidden;border:1px solid var(--border)}
+.type-toggle button{
+  padding:8px 18px;font-size:.9rem;border:none;cursor:pointer;
+  background:var(--surface);color:var(--text-dim);transition:all .2s;
+}
+.type-toggle button.active{background:var(--accent);color:#fff;font-weight:600}
+.search-btn{
+  flex:1;padding:12px;font-size:1rem;font-weight:600;border:none;border-radius:var(--radius);
+  background:var(--accent);color:#fff;cursor:pointer;transition:background .2s;
+}
+.search-btn:hover{background:var(--accent-hover)}
+
+/* Results */
+.results{width:100%;max-width:800px;display:flex;flex-direction:column;gap:20px}
+.result-header{
+  font-size:1.3rem;font-weight:700;padding-bottom:8px;
+  border-bottom:1px solid var(--border);margin-bottom:4px;
+}
+.group{
+  background:var(--card);border-radius:var(--radius);padding:18px 20px;
+  border:1px solid var(--border);
+}
+.group-title{
+  font-size:.85rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;
+  margin-bottom:14px;display:flex;align-items:center;gap:8px;
+}
+.group-tag{
+  display:inline-block;padding:2px 8px;border-radius:4px;font-size:.7rem;
+  font-weight:700;color:#fff;
+}
+.tag-bt{background:var(--tag-bt)}.tag-cn{background:var(--tag-cn)}
+.tag-intl{background:var(--tag-intl)}.tag-sub{background:var(--tag-sub)}
+
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.link-item{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:8px;
+  background:var(--surface);border:1px solid var(--border);
+  text-decoration:none;color:var(--text);font-size:.9rem;
+  transition:all .15s;
+}
+.link-item:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.link-item .icon{font-size:1rem}
+
+.tips{
+  margin-top:8px;padding:12px 16px;border-radius:var(--radius);
+  background:var(--surface);border:1px solid var(--border);
+  color:var(--text-dim);font-size:.82rem;line-height:1.6;
+}
+.tips strong{color:var(--text)}
+
+.empty{text-align:center;color:var(--text-dim);padding:60px 0;font-size:1rem}
+
+@media(max-width:500px){
+  body{padding:24px 10px 40px}
+  h1{font-size:1.4rem}
+  .input-row{flex-direction:column}
+  .input-row input.year{flex:1}
+  .group{padding:14px}
+}
+</style>
+</head>
+<body>
+
+<h1>电影资源搜索</h1>
+<p class="subtitle">输入片名，一键生成各资源站搜索链接</p>
+
+<div class="search-box">
+  <div class="input-row">
+    <input type="text" id="titleInput" placeholder="输入片名（中文或英文）" autofocus>
+    <input type="text" id="yearInput" class="year" placeholder="年份">
+  </div>
+  <div class="controls">
+    <div class="type-toggle">
+      <button class="active" data-type="movie">电影</button>
+      <button data-type="tv">剧集</button>
+    </div>
+    <button class="search-btn" id="searchBtn">搜索资源</button>
+  </div>
+</div>
+
+<div class="results" id="results">
+  <div class="empty">输入片名后点击搜索</div>
+</div>
+
+<script>
+(function(){
+  const titleInput = document.getElementById('titleInput');
+  const yearInput = document.getElementById('yearInput');
+  const searchBtn = document.getElementById('searchBtn');
+  const resultsEl = document.getElementById('results');
+  const toggleBtns = document.querySelectorAll('.type-toggle button');
+
+  let mediaType = 'movie';
+
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      toggleBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      mediaType = btn.dataset.type;
+    });
+  });
+
+  titleInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+  yearInput.addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+  searchBtn.addEventListener('click', doSearch);
+
+  function hasChinese(s) { return /[\u4e00-\u9fff]/.test(s); }
+  function hasLatin(s) { return /[a-zA-Z]/.test(s); }
+
+  function enc(s) { return encodeURIComponent(s); }
+  function encPlus(s) { return encodeURIComponent(s).replace(/%20/g, '+'); }
+
+  function doSearch() {
+    const title = titleInput.value.trim();
+    const year = yearInput.value.trim();
+    if (!title) return;
+
+    const isCN = hasChinese(title);
+    const isEN = hasLatin(title);
+    const isTV = mediaType === 'tv';
+    const titleYear = year ? title + ' ' + year : title;
+
+    const groups = [];
+
+    // --- YTS (movies only, English) ---
+    if (!isTV && isEN) {
+      groups.push({
+        title: 'YTS 高清下载',
+        tag: 'BT', tagClass: 'tag-bt',
+        links: [
+          { name: 'YTS', icon: '🎬', url: 'https://yts.mx/browse-movies/' + encPlus(titleYear) + '/all/all/0/latest/0/all' }
+        ]
+      });
+    }
+
+    // --- BT / Magnet (International) ---
+    if (isEN) {
+      const btLinks = [
+        { name: '1337x', icon: '🧲', url: 'https://1337x.to/search/' + enc(titleYear) + '/1/' },
+        { name: 'The Pirate Bay', icon: '🏴‍☠️', url: 'https://thepiratebay.org/search.php?q=' + enc(titleYear) },
+        { name: 'Torrent Galaxy', icon: '🌀', url: 'https://torrentgalaxy.to/torrents.php?search=' + enc(title) },
+      ];
+      if (isTV) {
+        btLinks.push({ name: 'EZTV', icon: '📺', url: 'https://eztv.re/search/' + enc(title) });
+      }
+      groups.push({
+        title: 'BT / 磁力（国际站）',
+        tag: 'BT', tagClass: 'tag-bt',
+        links: btLinks
+      });
+    }
+
+    // --- BT / Magnet (Chinese) ---
+    if (isCN) {
+      groups.push({
+        title: 'BT / 磁力（国内站）',
+        tag: '国内', tagClass: 'tag-cn',
+        links: [
+          { name: '电影天堂', icon: '🎥', url: 'https://s.dytt8.net/plus/search.php?q=' + enc(title) },
+          { name: 'BTDigg', icon: '🧲', url: 'https://btdig.com/search?q=' + enc(title) },
+          { name: '磁力猫', icon: '🐱', url: 'https://www.clicli.me/search?q=' + enc(title) },
+        ]
+      });
+    }
+
+    // --- Streaming (Chinese) ---
+    if (isCN) {
+      groups.push({
+        title: '正版平台（国内）',
+        tag: '国内', tagClass: 'tag-cn',
+        links: [
+          { name: '爱奇艺', icon: '▶️', url: 'https://www.iqiyi.com/search?para=' + enc(title) },
+          { name: '腾讯视频', icon: '▶️', url: 'https://v.qq.com/x/search/?q=' + enc(title) },
+          { name: '优酷', icon: '▶️', url: 'https://www.youku.com/search_video/q_' + enc(title) + '.html' },
+          { name: 'B站', icon: '▶️', url: 'https://search.bilibili.com/video?keyword=' + enc(title) },
+        ]
+      });
+    }
+
+    // --- Streaming (International) ---
+    if (isEN) {
+      const enTitle = title; // use as-is for English queries
+      groups.push({
+        title: '正版平台（海外）',
+        tag: '海外', tagClass: 'tag-intl',
+        links: [
+          { name: 'Netflix', icon: '🎬', url: 'https://www.netflix.com/search?q=' + enc(enTitle) },
+          { name: 'Amazon Prime', icon: '🛒', url: 'https://www.amazon.com/s?k=' + enc(enTitle) + '&i=instant-video' },
+          { name: 'JustWatch', icon: '🔍', url: 'https://www.justwatch.com/us/search?q=' + enc(enTitle) },
+        ]
+      });
+    }
+
+    // --- Subtitles ---
+    const subLinks = [];
+    if (isEN) {
+      subLinks.push({ name: 'OpenSubtitles', icon: '💬', url: 'https://www.opensubtitles.org/zh/search2/sublanguageid-chi/moviename-' + enc(title) });
+    }
+    subLinks.push({ name: 'SubHD', icon: '💬', url: 'https://subhd.tv/search/' + enc(title) });
+    subLinks.push({ name: '字幕库', icon: '💬', url: 'https://www.zimuku.net/search?q=' + enc(title) });
+    groups.push({
+      title: '字幕',
+      tag: '字幕', tagClass: 'tag-sub',
+      links: subLinks
+    });
+
+    render(title, year, isTV, groups);
+  }
+
+  function render(title, year, isTV, groups) {
+    const typeLabel = isTV ? '剧集' : '电影';
+    const yearLabel = year ? ' (' + year + ')' : '';
+
+    let html = '<div class="result-header">🎬 ' + escHtml(title) + yearLabel + ' · ' + typeLabel + '</div>';
+
+    groups.forEach(g => {
+      html += '<div class="group">';
+      html += '<div class="group-title"><span class="group-tag ' + g.tagClass + '">' + escHtml(g.tag) + '</span>' + escHtml(g.title) + '</div>';
+      html += '<div class="links">';
+      g.links.forEach(l => {
+        html += '<a class="link-item" href="' + escAttr(l.url) + '" target="_blank" rel="noopener">';
+        html += '<span class="icon">' + l.icon + '</span>' + escHtml(l.name) + '</a>';
+      });
+      html += '</div></div>';
+    });
+
+    // Tips
+    html += '<div class="tips">';
+    html += '<strong>搜索技巧：</strong>';
+    if (isTV) {
+      html += '剧集搜索时可追加 <strong>S01</strong>、<strong>S02</strong> 按季筛选；加 <strong>complete</strong> 查找合集；';
+    }
+    html += '加 <strong>1080p</strong> / <strong>2160p</strong> 过滤画质；';
+    html += '点击链接后会在新标签页打开对应站点的搜索结果。';
+    html += '</div>';
+
+    resultsEl.innerHTML = html;
+  }
+
+  function escHtml(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+  function escAttr(s) {
+    return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+})();
+</script>
+</body>
+</html>
