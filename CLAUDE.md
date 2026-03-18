@@ -35,6 +35,10 @@ The `description` field is critical: it determines when the skill auto-activates
 │       │   └── evals.json    # Evaluation test cases
 │       ├── references/       # Reference material (external scripts, docs)
 │       └── scripts/          # Automation scripts
+├── study/
+│   └── <topic>/
+│       ├── <topic>_英中双语对照.md  # Bilingual (EN/ZH) article translation
+│       └── images/                  # Images referenced by the markdown
 ├── dist/                     # Built .skill files (git-ignored)
 ├── CLAUDE.md
 └── README.md
