@@ -1,0 +1,9 @@
+# OS
+.DS_Store
+
+# Build artifacts
+*.skill
+dist/
+
+# Personal study notes
+study/
