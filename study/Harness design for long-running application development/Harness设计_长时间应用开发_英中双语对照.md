@@ -26,7 +26,7 @@ Over the past several months I've been working on two interconnected problems: g
 
 To break through, I sought out novel AI engineering approaches that held across two quite different domains, one defined by subjective taste, the other by verifiable correctness and usability. Taking inspiration from Generative Adversarial Networks (GANs), I designed a multi-agent structure with a **generator** and **evaluator** agent. Building an evaluator that graded outputs reliably—and with taste—meant first developing a set of criteria that could turn subjective judgments like "is this design good?" into concrete, gradable terms.
 
-为了突破这个天花板，我探索了在两个截然不同的领域都能成立的新型 AI 工程方法——一个由主观审美定义，另一个由可验证的正确性和可用性定义。受生成对抗网络（GANs）的启发，我设计了一个包含**生成器（generator）**和**评估器（evaluator）**的多 Agent 架构。要构建一个能可靠评分——并且有品味地评分——的评估器，首先需要开发一套标准，将"这个设计好不好？"这样的主观判断转化为具体的、可评分的术语。
+为了突破这个天花板，我探索了在两个截然不同的领域都能成立的新型 AI 工程方法——一个由主观审美定义，另一个由可验证的正确性和可用性定义。受生成对抗网络（GANs）的启发，我设计了一个包含 **生成器（generator）** 和 **评估器（evaluator）** 的多 Agent 架构。要构建一个能可靠评分——并且有品味地评分——的评估器，首先需要开发一套标准，将"这个设计好不好？"这样的主观判断转化为具体的、可评分的术语。
 
 ---
 
