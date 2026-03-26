@@ -154,7 +154,7 @@ In one notable example, I prompted the model to create a website for a Dutch art
 
 ---
 
-<video src="video/9877febd34432f7f582aecd0023b951223605c6a.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/c7dca629-171b-4bf9-9cd9-d4ed9f233d09
 
 *荷兰美术馆网站的 3D 空间体验迭代演示 | [▶ 在线观看原文](https://www.anthropic.com/engineering/harness-design-long-running-apps)*
 
@@ -470,7 +470,7 @@ The generator was still liable to miss details or stub features when left to its
 
 ---
 
-<video src="video/555910f9adb3938734940224e7a6f4c7cbbbd8f2.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/16718c75-2fcd-4fb1-86ea-f54117dfc476
 
 *DAW（数字音频工作站）演示：编曲视图、混音器和通过 AI Agent 进行歌曲创作 | [▶ 在线观看原文](https://www.anthropic.com/engineering/harness-design-long-running-apps)*
 
