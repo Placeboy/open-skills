@@ -154,10 +154,9 @@ In one notable example, I prompted the model to create a website for a Dutch art
 
 ---
 
-<video controls width="100%">
-  <source src="video/9877febd34432f7f582aecd0023b951223605c6a.mp4" type="video/mp4">
-</video>
-*荷兰美术馆网站的 3D 空间体验迭代演示 | [▶ 在线观看](https://cdn.sanity.io/files/4zrzovbb/website/9877febd34432f7f582aecd0023b951223605c6a.mp4)*
+<video src="video/9877febd34432f7f582aecd0023b951223605c6a.mp4" controls width="100%"></video>
+
+*荷兰美术馆网站的 3D 空间体验迭代演示 | [▶ 在线观看原文](https://www.anthropic.com/engineering/harness-design-long-running-apps)*
 
 ---
 
@@ -471,10 +470,9 @@ The generator was still liable to miss details or stub features when left to its
 
 ---
 
-<video controls width="100%">
-  <source src="video/555910f9adb3938734940224e7a6f4c7cbbbd8f2.mp4" type="video/mp4">
-</video>
-*DAW（数字音频工作站）演示：编曲视图、混音器和通过 AI Agent 进行歌曲创作 | [▶ 在线观看](https://cdn.sanity.io/files/4zrzovbb/website/555910f9adb3938734940224e7a6f4c7cbbbd8f2.mp4)*
+<video src="video/555910f9adb3938734940224e7a6f4c7cbbbd8f2.mp4" controls width="100%"></video>
+
+*DAW（数字音频工作站）演示：编曲视图、混音器和通过 AI Agent 进行歌曲创作 | [▶ 在线观看原文](https://www.anthropic.com/engineering/harness-design-long-running-apps)*
 
 ---
 
