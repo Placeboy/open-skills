@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review Fix Loop"
+  short_description: "Coordinate a race-safe two-task review and fix loop"
+  default_prompt: "Use $review-fix-loop reviewer or $review-fix-loop fixer for this review cycle."
