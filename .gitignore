@@ -5,3 +5,5 @@
 *.skill
 dist/
 
+# Local worktrees
+.worktrees/
