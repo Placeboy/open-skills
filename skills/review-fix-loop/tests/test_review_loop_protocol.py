@@ -48,6 +48,22 @@ class InstructionContractTests(unittest.TestCase):
                 self.assertIn(fragment, text)
 
 
+class DistributionContractTests(unittest.TestCase):
+    def test_runtime_listener_locations_are_explicit(self):
+        claude_text = CLAUDE_PATH.read_text(encoding="utf-8")
+        self.assertIn("scripts/review_loop_listener.py", CODEX_TEXT)
+        self.assertIn(
+            "~/.claude/commands/review-fix-loop/review_loop_listener.py",
+            claude_text,
+        )
+
+    def test_both_runtimes_require_listener_verification(self):
+        claude_text = CLAUDE_PATH.read_text(encoding="utf-8")
+        for text in (CODEX_TEXT, claude_text):
+            self.assertIn(" verify \\", text)
+            self.assertIn("--max-age 5", text)
+
+
 def wait_until(predicate, timeout=5.0):
     deadline = time.monotonic() + timeout
     while time.monotonic() < deadline:
